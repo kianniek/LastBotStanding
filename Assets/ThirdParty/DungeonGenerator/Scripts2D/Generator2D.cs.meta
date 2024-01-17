@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 0763b230d22fd334bbc9441aed267b70
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - cubePrefab: {fileID: 7415050535990569633, guid: 3fb4ddafbd160274ba8f07a1cf8cd5ee,
+      type: 3}
+  - redMaterial: {fileID: 2100000, guid: 71673d9873285904ab00282788add27f, type: 2}
+  - blueMaterial: {fileID: 2100000, guid: bd79999920190574a94044b2acad7316, type: 2}
+  - startRoomMaterial: {fileID: 2100000, guid: 1b7e6374bd4971847b95e93188413e30, type: 2}
+  - endRoomMaterial: {fileID: 2100000, guid: 1cfecde48c2565e4da4e0dc0633e64a2, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
