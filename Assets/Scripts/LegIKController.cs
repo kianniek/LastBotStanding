@@ -14,18 +14,18 @@ public struct LegStruct
 public class LegIKController : MonoBehaviour
 {
     [SerializeField] AdvancedWalkerController walkerController;
-    public Transform bodyCenter; // Reference to the body's center
+    public Transform bodyCenter;      // Reference to the body's center
     public LegStruct[] legs;
-    private float[] lerpTimer;   // Array to store lerping timers for each leg
-    public float feetDistance;   // Distance from the feet to the ground
+    private float[] lerpTimer;        // Array to store lerping timers for each leg
+    public float feetDistance;        // Distance from the feet to the ground
     public float stepDistance = 1.0f; // The maximum distance a leg can step at a time
     [Range(0, 1)]
-    public float stepSpeed = 0.9f;   // The speed a leg can step at a time
-    public float stepHeight;         // The height of the leg's step
+    public float stepSpeed = 0.9f;    // The speed a leg can step at a time
+    public float stepHeight;          // The height of the leg's step
 
     // GameObjects for the leg targets
     public GameObject[] legTarget;
-    public bool[] stepping;  // Array to track if each leg is currently stepping
+    public bool[] stepping;           // Array to track if each leg is currently stepping
     private Vector3 lastGroundPos_BR;
     private Vector3 lastGroundPos_BL;
     private Vector3 lastGroundPos_L;
@@ -33,14 +33,13 @@ public class LegIKController : MonoBehaviour
     private Vector3 previousBodyPosition;
     private Quaternion previousBodyRotation;
 
-    private int activeLegIndex = 0; // Index of the currently active leg
+    private int activeLegIndex = 0;   // Index of the currently active leg
 
     public bool standingStill;
-    public Transform currentPlatform = null;
+    private Transform currentPlatform = null;
     private Vector3 platformPositionLastFrame;
-    private Quaternion platformRotationLastFrame;
-    // Layer mask to detect ground
-    public LayerMask groundLayer;
+    
+    public LayerMask groundLayer;     // Layer mask to detect ground
 
     void Start()
     {
@@ -227,17 +226,18 @@ public class LegIKController : MonoBehaviour
     private void MoveLegTargetsWithPlatform()
     {
         Vector3 platformDeltaPosition = currentPlatform.position - platformPositionLastFrame;
-        Quaternion platformDeltaRotation = currentPlatform.rotation * Quaternion.Inverse(platformRotationLastFrame);
+        if(platformDeltaPosition.magnitude > 10)
+        {
+            platformDeltaPosition = Vector3.zero;
+        }
 
         // Apply the platform's movement and rotation to each leg target
         for (int i = 0; i < legTarget.Length; i++)
         {
-            legTarget[i].transform.position += platformDeltaPosition;
-            legTarget[i].transform.rotation *= platformDeltaRotation;
+            legTarget[i].transform.position += platformDeltaPosition + platformDeltaPosition * Time.deltaTime;
         }
 
         platformPositionLastFrame = currentPlatform.position;
-        platformRotationLastFrame = currentPlatform.rotation;
     }
 
     public void SetCurrentPlatform(Transform platform)

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.PlayerLoop;
 
 namespace CMF
 {
@@ -61,6 +62,25 @@ namespace CMF
             StartCoroutine(LateFixedUpdate());
         }
 
+        private void Update()
+        {
+            if (!legIKController)
+            {
+                legIKController = triggerArea.legIKController;
+            }
+            else
+            {
+                if (triggerArea.legIKController != null)
+                {
+                    legIKController.SetCurrentPlatform(transform);
+                }
+                else
+                {
+                    legIKController.SetCurrentPlatform(null);
+                }
+            }
+        }
+
         //This coroutine ensures that platform movement always occurs after Fixed Update;
         IEnumerator LateFixedUpdate()
         {
@@ -107,24 +127,6 @@ namespace CMF
                 return;
 
             //Move all controllrs on top of the platform the same distance;
-            if (!legIKController)
-            {
-                legIKController = triggerArea.legIKController;
-            }
-            else
-            {
-                if (triggerArea.legIKController != null)
-                {
-                    print("1");
-                    legIKController.SetCurrentPlatform(transform);
-                }
-                else
-                {
-                    print("2");
-                    legIKController.SetCurrentPlatform(null);
-                }
-            }
-
             for (int i = 0; i < triggerArea.rigidbodiesInTriggerArea.Count; i++)
             {
                 

@@ -622,6 +622,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rigidbodiesInTriggerArea: []
+  legIKController: {fileID: 0}
 --- !u!65 &177703147
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -641,8 +642,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3.5, y: 3.5, z: 0.88}
-  m_Center: {x: 0, y: 0, z: 0.49}
+  m_Size: {x: 3.5, y: 3.5, z: 3}
+  m_Center: {x: 0, y: 0, z: 1.5}
 --- !u!1 &187562248
 GameObject:
   m_ObjectHideFlags: 0
@@ -776,7 +777,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 220822761}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 16, y: 0.13999999, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -800,6 +801,7 @@ MonoBehaviour:
   movementSpeed: 5
   reverseDirection: 0
   waitTime: 2
+  legIKController: {fileID: 0}
   waypoints:
   - {fileID: 1763111287}
   - {fileID: 289081135}
@@ -1344,7 +1346,7 @@ Transform:
   m_GameObject: {fileID: 289081134}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 16, y: 4, z: -5}
+  m_LocalPosition: {x: 20, y: 8, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3359,6 +3361,7 @@ MonoBehaviour:
   movementSpeed: 5
   reverseDirection: 0
   waitTime: 2
+  legIKController: {fileID: 0}
   waypoints:
   - {fileID: 358827646}
   - {fileID: 1607103059}
@@ -9470,6 +9473,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rigidbodiesInTriggerArea: []
+  legIKController: {fileID: 0}
 --- !u!65 &1780327570
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9489,8 +9493,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3.5, y: 3.5, z: 0.88}
-  m_Center: {x: 0, y: 0, z: 0.49}
+  m_Size: {x: 3.5, y: 3.5, z: 3}
+  m_Center: {x: 0, y: 0, z: 1.5}
 --- !u!1 &1786865997
 GameObject:
   m_ObjectHideFlags: 0
@@ -12416,6 +12420,8 @@ MonoBehaviour:
   - {fileID: 842190073}
   - {fileID: 1625376416}
   stepping: 
+  standingStill: 0
+  currentPlatform: {fileID: 0}
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -13178,9 +13184,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d98ace8715c2a184ca85247b18eb0853, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stepHeightRatio: 0.25
-  colliderHeight: 2
-  colliderThickness: 1
+  stepHeightRatio: 0.323
+  colliderHeight: 3.02
+  colliderThickness: 1.31
   colliderOffset: {x: 0, y: 0.5, z: 0}
   sensorType: 0
   isInDebugMode: 0
@@ -13281,10 +13287,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1.5
+  m_Radius: 0.655
+  m_Height: 2.04454
   m_Direction: 1
-  m_Center: {x: 0, y: 1.25, z: 0}
+  m_Center: {x: 0, y: 1.99773, z: 0}
 --- !u!81 &5745414578436054811
 AudioListener:
   m_ObjectHideFlags: 0

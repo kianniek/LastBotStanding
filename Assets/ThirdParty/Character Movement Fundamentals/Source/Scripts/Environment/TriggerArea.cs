@@ -17,18 +17,17 @@ namespace CMF
 			if(col.attachedRigidbody != null && col.GetComponent<Mover>() != null)
 			{
 				rigidbodiesInTriggerArea.Add(col.attachedRigidbody);
+				legIKController = col.gameObject.GetComponentInChildren<LegIKController>();
 			}
-            legIKController = col.gameObject.GetComponentInChildren<LegIKController>();
         }
 
-		//Check if the collider that just left the trigger has a rigidbody (and a mover) attached and remove it from the list;
-		void OnTriggerExit(Collider col)
+        //Check if the collider that just left the trigger has a rigidbody (and a mover) attached and remove it from the list;
+        void OnTriggerExit(Collider col)
 		{
 			if(col.attachedRigidbody != null && col.GetComponent<Mover>() != null)
 			{
 				rigidbodiesInTriggerArea.Remove(col.attachedRigidbody);
 				legIKController = null;
-
             }
 		}
 	}
