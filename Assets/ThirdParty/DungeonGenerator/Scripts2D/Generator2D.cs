@@ -367,7 +367,7 @@ public class Generator2D : MonoBehaviour
         goMR = endRoom.assignedRoomObj.GetComponent<MeshRenderer>() != null ? endRoom.assignedRoomObj.GetComponent<MeshRenderer>() : endRoom.assignedRoomObj.GetComponentInChildren<MeshRenderer>();
         goMR.material = endRoomMaterial;
 
-        //MoveMazeToSpawnPoint(startRoom);
+        MoveMazeToSpawnPoint(startRoom);
     }
 
     void MoveMazeToSpawnPoint(Room startRoom)
