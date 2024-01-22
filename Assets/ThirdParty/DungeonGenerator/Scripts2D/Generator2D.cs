@@ -35,6 +35,9 @@ public class Generator2D : MonoBehaviour
 
     // Serialized fields are editable from the Unity editor
     [SerializeField]
+    [Tooltip("If none defaut to {0, 0, 0}")]
+    GameObject spawnPoint;
+    [SerializeField]
     Vector2Int size; // Overall grid size
     [SerializeField]
     int roomCount; // Number of rooms to generate
@@ -245,25 +248,41 @@ public class Generator2D : MonoBehaviour
 
     void PlaceCube(Vector2Int location, Vector2Int size, Material material, int roomId, string tag = "Default")
     {
-        GameObject go = Instantiate(cubePrefab, new Vector3(location.x, 0, location.y), Quaternion.identity);
-        go.GetComponent<Transform>().localScale = new Vector3(size.x, 1, size.y);
-        go.GetComponent<MeshRenderer>().material = material;
+        //GameObject go = Instantiate(cubePrefab, new Vector3(location.x, 0, location.y), Quaternion.identity);
+        //go.GetComponent<Transform>().localScale = new Vector3(size.x, 1, size.y);
+        // Assuming each model is 1x1 units
+        int modelsInX = (int)size.x;
+        int modelsInY = (int)size.y;
 
-        if (roomId > -1)
+        for (int i = 0; i < modelsInX; i++)
         {
-            rooms[roomId].assingedRoomObj = go;
-        }
-        go.gameObject.tag = tag;
+            for (int j = 0; j < modelsInY; j++)
+            {
+                // Calculate the position for each model
+                Vector3 spawnPosition = new Vector3(location.x + i, 0, location.y + j);
+                GameObject go = Instantiate(cubePrefab, spawnPosition, Quaternion.identity);
 
-        // Set parent based on tag
-        if (go.CompareTag(tags[0])) // "Room"
-        {
-            go.transform.SetParent(roomParent.transform);
+                MeshRenderer goMR;
+                goMR = go.GetComponent<MeshRenderer>() != null ? go.GetComponent<MeshRenderer>() : go.GetComponentInChildren<MeshRenderer>();
+                goMR.material = material;
+                if (roomId > -1)
+                {
+                    rooms[roomId].assingedRoomObj = go;
+                }
+                go.tag = tag;
+
+                // Set parent based on tag
+                if (go.CompareTag(tags[0])) // "Room"
+                {
+                    go.transform.SetParent(roomParent.transform);
+                }
+                else if (go.CompareTag(tags[1])) // "Hallway"
+                {
+                    go.transform.SetParent(hallwayParent.transform);
+                }
+            }
         }
-        else if (go.CompareTag(tags[1])) // "Hallway"
-        {
-            go.transform.SetParent(hallwayParent.transform);
-        }
+        
     }
 
     void PlaceRoom(Vector2Int location, Vector2Int size, int roomId)
@@ -284,9 +303,25 @@ public class Generator2D : MonoBehaviour
 
         startRoom = GetFarthestRoom(center, rooms);
         endRoom = GetFarthestRoom(startRoom.bounds.position, rooms);
+        MeshRenderer goMR;
+        goMR = startRoom.assingedRoomObj.GetComponent<MeshRenderer>() != null ? startRoom.assingedRoomObj.GetComponent<MeshRenderer>() : startRoom.assingedRoomObj.GetComponentInChildren<MeshRenderer>();
+        goMR.material = startRoomMaterial;
+        goMR = endRoom.assingedRoomObj.GetComponent<MeshRenderer>() != null ? endRoom.assingedRoomObj.GetComponent<MeshRenderer>() : endRoom.assingedRoomObj.GetComponentInChildren<MeshRenderer>();
+        goMR.material = endRoomMaterial;
 
-        startRoom.assingedRoomObj.GetComponent<MeshRenderer>().material = startRoomMaterial;
-        endRoom.assingedRoomObj.GetComponent<MeshRenderer>().material = endRoomMaterial;
+        MoveMazeToSpawnPoint(startRoom);
+    }
+
+    void MoveMazeToSpawnPoint(Room startRoom)
+    {
+        if (!spawnPoint)
+        {
+            dungeonHolder.transform.position -= startRoom.assingedRoomObj.transform.position + (startRoom.assingedRoomObj.transform.localScale / 2); //Set StartRoom pos to 0,0,0
+        }
+        else
+        {
+            dungeonHolder.transform.position -= startRoom.assingedRoomObj.transform.position + (startRoom.assingedRoomObj.transform.localScale / 2) - spawnPoint.transform.position;
+        }
     }
     private static RectInt GetBoundingBox(List<Room> rects)
     {
