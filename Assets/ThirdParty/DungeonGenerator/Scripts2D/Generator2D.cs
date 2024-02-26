@@ -70,6 +70,12 @@ public class Generator2D : MonoBehaviour
     Delaunay2D delaunay; // Delaunay triangulation for inter-room connections
     HashSet<Prim.Edge> selectedEdges; // Hallway paths
 
+    //editorChangeKeeping
+    Vector2Int sizeOld; // Overall grid size
+    int roomCountOld; // Number of rooms to generate
+    Vector2Int roomMaxSizeOld; // Maximum size for any room
+    Vector2Int roomMinSizeOld; // Maximum size for any room
+
     // Fields to store the empty GameObjects for organization
     private GameObject dungeonHolder;
     private GameObject roomParent;
@@ -86,6 +92,17 @@ public class Generator2D : MonoBehaviour
         Generate();
     }
 
+    private void FixedUpdate()
+    {
+        if(sizeOld != size || roomCountOld != roomCount || roomMaxSizeOld != roomMaxSize || roomMinSizeOld != roomMinSize)
+        {
+            ReGenerate();
+            sizeOld = size; 
+            roomCountOld = roomCount; 
+            roomMaxSizeOld = roomMaxSize;
+            roomMinSizeOld = roomMinSize;
+        }
+    }
     // Main generation method
     void Generate()
     {
@@ -102,6 +119,24 @@ public class Generator2D : MonoBehaviour
         CreateStartAndEnd();
         AdjustRoomWalls();
         PrintGrid();
+    }
+
+    void ReGenerate()
+    {
+        //delete all of the maze
+        Destroy(dungeonHolder);
+        Destroy(roomParent);
+        Destroy(hallwayParent);
+
+        dungeonHolder = new GameObject("Dungeon Holder");
+        roomParent = new GameObject("Rooms");
+        hallwayParent = new GameObject("Hallways");
+
+        roomParent.transform.SetParent(dungeonHolder.transform);
+        hallwayParent.transform.SetParent(dungeonHolder.transform);
+
+        //genrate maze
+        Generate();
     }
     void PrintGrid()
     {
@@ -133,8 +168,6 @@ public class Generator2D : MonoBehaviour
                 return '2'; // Represent empty cell and any other undefined types
         }
     }
-
-
 
     // Method to place rooms on the grid
     void PlaceRooms()
@@ -176,6 +209,10 @@ public class Generator2D : MonoBehaviour
                 {
                     grid[pos] = CellType.Room;
                 }
+            }
+            else
+            {
+                i--;
             }
         }
     }
