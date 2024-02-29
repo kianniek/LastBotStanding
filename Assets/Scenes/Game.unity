@@ -659,7 +659,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnPoint: {fileID: 852372117}
-  size: {x: 30, y: 50}
+  size: {x: 64, y: 64}
   roomCount: 30
   roomMaxSize: {x: 6, y: 6}
   roomMinSize: {x: 2, y: 2}
@@ -672,6 +672,7 @@ MonoBehaviour:
   tags:
   - Room
   - Hallway
+  retries: 3
 --- !u!1 &2022575698
 GameObject:
   m_ObjectHideFlags: 0

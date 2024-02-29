@@ -59,6 +59,9 @@ public class Generator2D : MonoBehaviour
     Material endRoomMaterial; // Material for hallways
     [SerializeField]
     string[] tags = { "Room", "Hallway" }; // Tags for identification
+    [SerializeField]
+    int retries = 100;
+    int retriesStart = 100;
 
     // Private fields
     Random random; // Random generator
@@ -86,7 +89,7 @@ public class Generator2D : MonoBehaviour
         dungeonHolder = new GameObject("Dungeon Holder");
         roomParent = new GameObject("Rooms");
         hallwayParent = new GameObject("Hallways");
-
+        dungeonHolder.transform.SetParent(transform);
         roomParent.transform.SetParent(dungeonHolder.transform);
         hallwayParent.transform.SetParent(dungeonHolder.transform);
         Generate();
@@ -94,11 +97,11 @@ public class Generator2D : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(sizeOld != size || roomCountOld != roomCount || roomMaxSizeOld != roomMaxSize || roomMinSizeOld != roomMinSize)
+        if (sizeOld != size || roomCountOld != roomCount || roomMaxSizeOld != roomMaxSize || roomMinSizeOld != roomMinSize)
         {
             ReGenerate();
-            sizeOld = size; 
-            roomCountOld = roomCount; 
+            sizeOld = size;
+            roomCountOld = roomCount;
             roomMaxSizeOld = roomMaxSize;
             roomMinSizeOld = roomMinSize;
         }
@@ -106,6 +109,13 @@ public class Generator2D : MonoBehaviour
     // Main generation method
     void Generate()
     {
+        if (!ValidateGridSize() || !ValidateRoomSizesAndCount())
+        {
+            print("Can not generate Maze");
+            return; // Stop generation if validation fails
+        }
+
+        // Proceed with generation
         random = new Random(0); // Initialize random with a seed
         grid = new Grid2D<CellType>(size, Vector2Int.zero); // Create a new grid
         rooms = new List<Room>(); // Initialize rooms list
@@ -120,6 +130,35 @@ public class Generator2D : MonoBehaviour
         AdjustRoomWalls();
         PrintGrid();
     }
+    bool ValidateRoomSizesAndCount()
+    {
+        // Ensure room sizes do not exceed the grid size
+        if (roomMaxSize.x > size.x || roomMaxSize.y > size.y)
+        {
+            Debug.LogError("Maximum room size exceeds grid dimensions.");
+            return false;
+        }
+
+        // Estimate the total minimum space needed for all rooms (not accounting for walls/hallways)
+        int totalRoomArea = roomCount * roomMinSize.x * roomMinSize.y;
+        int gridArea = size.x * size.y;
+        if (totalRoomArea > gridArea / 2) // Example threshold, adjust based on hallway/wall expectations
+        {
+            Debug.LogError("Insufficient grid space for the desired number of rooms.");
+            return false;
+        }
+
+        return true;
+    }
+    bool ValidateGridSize()
+    {
+        if (size.x <= 0 || size.y <= 0)
+        {
+            Debug.LogError("Grid size must be positive.");
+            return false;
+        }
+        return true;
+    }
 
     void ReGenerate()
     {
@@ -131,7 +170,7 @@ public class Generator2D : MonoBehaviour
         dungeonHolder = new GameObject("Dungeon Holder");
         roomParent = new GameObject("Rooms");
         hallwayParent = new GameObject("Hallways");
-
+        dungeonHolder.transform.SetParent(transform);
         roomParent.transform.SetParent(dungeonHolder.transform);
         hallwayParent.transform.SetParent(dungeonHolder.transform);
 
@@ -172,6 +211,7 @@ public class Generator2D : MonoBehaviour
     // Method to place rooms on the grid
     void PlaceRooms()
     {
+        retriesStart = retries;
         for (int i = 0; i < roomCount; i++)
         {
             // Randomize room location and size
@@ -212,7 +252,11 @@ public class Generator2D : MonoBehaviour
             }
             else
             {
-                i--;
+                if (retriesStart > 0)
+                {
+                    i--;
+                    retriesStart--;
+                }
             }
         }
     }
@@ -335,7 +379,7 @@ public class Generator2D : MonoBehaviour
                 // Calculate the position for each model
                 Vector3 spawnPosition = new Vector3(location.x + i, 0, location.y + j);
                 GameObject go = Instantiate(cubePrefab, spawnPosition, Quaternion.identity);
-                RoomSettings rs= go.GetComponent<RoomSettings>();
+                RoomSettings rs = go.GetComponent<RoomSettings>();
                 rs.gridPos = new Vector2Int(location.x + i, location.y + j);
                 roomWalls.Add(go.GetComponent<RoomSettings>());
                 MeshRenderer goMR;
@@ -358,7 +402,7 @@ public class Generator2D : MonoBehaviour
                 }
             }
         }
-        
+
     }
 
     void AdjustRoomWalls()
